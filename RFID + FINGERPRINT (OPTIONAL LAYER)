@@ -1,0 +1,24 @@
+#include <MFRC522.h>.ino
+#include <SPI.h>
+
+#define SS_PIN 5
+#define RST_PIN 22
+
+MFRC522 rfid(SS_PIN, RST_PIN);
+
+String allowed = "A1 B2 C3 D4";
+
+bool checkRFID() {
+  if (!rfid.PICC_IsNewCardPresent()) return false;
+  if (!rfid.PICC_ReadCardSerial()) return false;
+
+  String uid = "";
+
+  for (byte i = 0; i < rfid.uid.size; i++) {
+    uid += String(rfid.uid.uidByte[i], HEX);
+  }
+
+  uid.toUpperCase();
+
+  return (uid == allowed);
+}
